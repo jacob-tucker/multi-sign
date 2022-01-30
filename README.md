@@ -1,0 +1,1 @@
+How to sign a transaction on your front end using both the user (fcl.authz) and a backend Admin signature (multi-sign)
