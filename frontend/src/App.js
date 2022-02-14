@@ -16,33 +16,18 @@ const App = () => {
     fcl.currentUser().subscribe(setUser);
   }, [])
 
-  const singleSign = async () => {
-    const transactionId = await fcl.send([
-      fcl.transaction`
-      transaction() {
-        prepare(signer: AuthAccount) {
-
-        }
-      }
-      `,
-      fcl.payer(fcl.authz),
-      fcl.proposer(fcl.authz),
-      fcl.authorizations([fcl.authz]),
-      fcl.limit(9999)
-    ]).then(fcl.decode);
-
-    console.log(transactionId);
-  }
-
   const multiSign = async () => {
     const transactionId = await fcl.send([
       fcl.transaction`
-      transaction() {
+      transaction(number: Int) {
         prepare(frontendUser: AuthAccount, backendAdmin: AuthAccount) {
-
+          
         }
       }
       `,
+      fcl.args([
+        fcl.arg(2, t.Int)
+      ]),
       fcl.payer(serverAuthorization),
       fcl.proposer(fcl.authz),
       fcl.authorizations([fcl.authz, serverAuthorization]),
@@ -58,9 +43,8 @@ const App = () => {
         <h1>{user && user.addr ? user.addr : "Not logged in."}</h1>
         <div>
           <button onClick={() => fcl.authenticate()}>Log In</button>
-          <button onClick={() => fcl.unauthenticate()}>Log In</button>
+          <button onClick={() => fcl.unauthenticate()}>Log Out</button>
         </div>
-        <button onClick={() => singleSign()}>Run Single-Sign Tx</button>
         <button onClick={() => multiSign()}>Run Multi-Sign Tx</button>
       </header>
     </div>
